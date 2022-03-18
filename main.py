@@ -28,6 +28,28 @@ def is_valid_profile(username: str) -> bool:
     return correct_title in title
 
 
+def is_private_profile(username: str) -> bool:
+    """
+    Check if `username` is a private profile.
+
+    :username: Your username
+    """
+
+    restart = True
+    while restart:
+        with urllib.request.urlopen(USER_URL % p_args.username) as f:
+            data = f.read()
+            parser = etree.XMLParser(recover=True)
+            root = ET.fromstring(data, parser=parser)
+
+        no_cover = len(root.findall('.//*[@class="uco-cover no-cover"]')) == 0
+        cover = len(root.findall('.//*[@class="uco-cover "]')) == 0
+        restart = no_cover and cover
+
+    field = root.findall('.//*[@class="uvi-numbers-item"]')
+    return len(field) == 0
+
+
 def get_number_of_pages(username: str, collection: str = 'film') -> List[
         Dict[str, str]]:
     """
@@ -194,7 +216,9 @@ if __name__ == '__main__':
           % p_args.username)
 
     if not is_valid_profile(p_args.username):
-        raise ValueError('Username is not valid')
+        raise ValueError('The username is not valid')
+    if is_private_profile(p_args.username):
+        raise ValueError('The account is private')
 
     if p_args.add_tv:
         collections = ['film', 'tv']
