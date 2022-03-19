@@ -49,8 +49,7 @@ def is_private_profile(username: str) -> bool:
     return len(field) == 0
 
 
-def get_number_of_pages(username: str, collection: str = 'film') -> List[
-        Dict[str, str]]:
+def get_number_of_pages(username: str, collection: str = 'film') -> int:
     """
     Return the number of pages in the `collection`.
 
@@ -89,7 +88,7 @@ def get_number_of_pages(username: str, collection: str = 'film') -> List[
 
 
 def get_ratings_from_page(username: str, page_id: int,
-                          collection: str = 'film'):
+                          collection: str = 'film') -> List[Dict[str, str]]:
     """
     Return movie ratings from a given `page_id`-th page for `username`.
 
