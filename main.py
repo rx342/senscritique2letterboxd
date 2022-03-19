@@ -12,13 +12,12 @@ USER_URL = "https://www.senscritique.com/%s"
 def is_valid_profile(username: str) -> bool:
     """
     Check if `username` is valid.
-
     If it is not, SensCritique usually returns to homepage.
 
     :username: Your username
     """
 
-    with urllib.request.urlopen(USER_URL % p_args.username) as f:
+    with urllib.request.urlopen(USER_URL % username) as f:
         data = f.read()
         parser = etree.XMLParser(recover=True)
         root = ET.fromstring(data, parser=parser)
@@ -37,7 +36,7 @@ def is_private_profile(username: str) -> bool:
 
     restart = True
     while restart:
-        with urllib.request.urlopen(USER_URL % p_args.username) as f:
+        with urllib.request.urlopen(USER_URL % username) as f:
             data = f.read()
             parser = etree.XMLParser(recover=True)
             root = ET.fromstring(data, parser=parser)
