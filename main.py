@@ -1,6 +1,5 @@
-import urllib
-import xmltodict
 import xml.etree.ElementTree as ET
+import urllib.request
 from lxml import etree
 from typing import Dict, List
 from rich.progress import track
