@@ -20,7 +20,12 @@ def is_valid_profile(username: str) -> bool:
         data = f.read()
         parser = etree.XMLParser(recover=True)
         root = ET.fromstring(data, parser=parser)
-        title = root.find('head/title').text
+        title = root.find('head/title')
+
+        if title is None:
+            raise ValueError('Title not found')
+
+        title = str(title.text)
 
     correct_title = 'Profil culturel et avis de'
     return correct_title in title
@@ -34,6 +39,7 @@ def is_private_profile(username: str) -> bool:
     """
 
     restart = True
+    root = None
     while restart:
         with urllib.request.urlopen(USER_URL % username) as f:
             data = f.read()
@@ -43,6 +49,9 @@ def is_private_profile(username: str) -> bool:
         no_cover = len(root.findall('.//*[@class="uco-cover no-cover"]')) == 0
         cover = len(root.findall('.//*[@class="uco-cover "]')) == 0
         restart = no_cover and cover
+
+    if root is None:
+        raise ValueError('Error when checking if profile is private')
 
     field = root.findall('.//*[@class="uvi-numbers-item"]')
     return len(field) == 0
@@ -69,6 +78,7 @@ def get_number_of_pages(username: str, collection: str = 'film') -> int:
            + '/page-1')
 
     restart = True
+    root = None
     while restart:
         with urllib.request.urlopen(url) as f:
             data = f.read()
@@ -79,7 +89,10 @@ def get_number_of_pages(username: str, collection: str = 'film') -> int:
 
         restart = (len(elements) == 0)
 
-    page = root.findall('.//*[@class="eipa-page"]/a')[-1].text
+    if root is None:
+        raise ValueError('Error when checking if profile is private')
+
+    page = str(root.findall('.//*[@class="eipa-page"]/a')[-1].text)
     if '.' in page:
         page = page.replace('.', '')
 
@@ -89,7 +102,7 @@ def get_number_of_pages(username: str, collection: str = 'film') -> int:
 def get_ratings_from_page(username: str, page_id: int,
                           collection: str = 'film') -> List[Dict[str, str]]:
     """
-    Return movie ratings from a given `page_id`-th page for `username`.
+    Return movie/tv ratings from a given `page_id`-th page for `username`.
 
     :username: Your username
     :page_id: Specific page
@@ -109,6 +122,7 @@ def get_ratings_from_page(username: str, page_id: int,
            + '/page-%d' % page_id)
 
     restart = True
+    root = None
     while restart:
         with urllib.request.urlopen(url) as f:
             data = f.read()
@@ -118,6 +132,9 @@ def get_ratings_from_page(username: str, page_id: int,
             elements = root.findall('.//*[@class="elco-collection-item"]')
 
         restart = (len(elements) == 0)
+
+    if root is None:
+        raise ValueError('Error when checking if profile is private')
 
     notes = root.findall('.//*[@class="elrua-useraction-action "]')
 
@@ -141,7 +158,11 @@ def get_ratings_from_page(username: str, page_id: int,
 
     results = []
     for n, t, y in zip(notes, titles, years):
-        _n = n.find('span').text.lstrip().rstrip()
+        _n = n.find('span')
+        if _n is None:
+            raise ValueError('Error when parsing a movie/tv show')
+
+        _n = str(_n.text).lstrip().rstrip()
         note = None if _n == '' else int(_n)
 
         if y is not None:
