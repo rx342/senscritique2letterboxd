@@ -16,7 +16,11 @@ def is_valid_profile(username: str) -> bool:
     :username: Your username
     """
 
-    with urllib.request.urlopen(USER_URL % username) as f:
+    request = urllib.request.Request(
+        url=USER_URL % username,
+        headers={'User-Agent': 'Mozilla/5.0'})
+
+    with urllib.request.urlopen(request) as f:
         data = f.read()
         parser = etree.XMLParser(recover=True)
         root = ET.fromstring(data, parser=parser)
@@ -40,8 +44,13 @@ def is_private_profile(username: str) -> bool:
 
     restart = True
     root = None
+
+    request = urllib.request.Request(
+        url=USER_URL % username,
+        headers={'User-Agent': 'Mozilla/5.0'})
+
     while restart:
-        with urllib.request.urlopen(USER_URL % username) as f:
+        with urllib.request.urlopen(request) as f:
             data = f.read()
             parser = etree.XMLParser(recover=True)
             root = ET.fromstring(data, parser=parser)
@@ -77,10 +86,14 @@ def get_number_of_pages(username: str, collection: str = 'film') -> int:
            + '/%s/all/all/all/all/all/all/list' % choice
            + '/page-1')
 
+    request = urllib.request.Request(
+        url=url,
+        headers={'User-Agent': 'Mozilla/5.0'})
+
     restart = True
     root = None
     while restart:
-        with urllib.request.urlopen(url) as f:
+        with urllib.request.urlopen(request) as f:
             data = f.read()
             parser = etree.XMLParser(recover=True)
             root = ET.fromstring(data, parser=parser)
@@ -121,10 +134,14 @@ def get_ratings_from_page(username: str, page_id: int,
            + '/%s/all/all/all/all/all/all/list' % choice
            + '/page-%d' % page_id)
 
+    request = urllib.request.Request(
+        url=url,
+        headers={'User-Agent': 'Mozilla/5.0'})
+
     restart = True
     root = None
     while restart:
-        with urllib.request.urlopen(url) as f:
+        with urllib.request.urlopen(request) as f:
             data = f.read()
             parser = etree.XMLParser(recover=True)
             root = ET.fromstring(data, parser=parser)
