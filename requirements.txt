@@ -1,3 +1,2 @@
 rich
-lxml
-xmltodict
+requests
