@@ -3,11 +3,9 @@ SensCritique2Letterboxd 🍿📊
 
 If you want to export your movies from [SensCritique](https://senscritique.com) to [Letterboxd](https://letterboxd.com).
 
-> :warning: Since Senscritique redesign this script may not work anymore
+(It also works for *private* members!)
 
 ## Requirements
-
-**Your SensCritique account needs to be public.**
 
 Please install the requirements with `pip`:
 

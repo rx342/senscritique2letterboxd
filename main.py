@@ -1,195 +1,85 @@
-import xml.etree.ElementTree as ET
-import urllib.request
-from lxml import etree
+import csv
+import json
+import requests
 from typing import Dict, List
 from rich.progress import track
 
 
-USER_URL = "https://www.senscritique.com/%s"
-
-
-def is_valid_profile(username: str) -> bool:
+def get_data_batch(username: str, offset: int = 0, universe: str = 'movie'):
     """
-    Check if `username` is valid.
-    If it is not, SensCritique usually returns to homepage.
+    Send POST request
 
-    :username: Your username
+    :username: Senscritique username
+    :offset: Offset value
+    :universe: 'movie' or 'tvShow'
     """
 
-    request = urllib.request.Request(
-        url=USER_URL % username,
-        headers={'User-Agent': 'Mozilla/5.0'})
-
-    with urllib.request.urlopen(request) as f:
-        data = f.read()
-        parser = etree.XMLParser(recover=True)
-        root = ET.fromstring(data, parser=parser)
-        title = root.find('head/title')
-
-        if title is None:
-            raise ValueError('Title not found')
-
-        title = str(title.text)
-
-    correct_title = 'Profil culturel et avis de'
-    return correct_title in title
-
-
-def is_private_profile(username: str) -> bool:
-    """
-    Check if `username` is a private profile.
-
-    :username: Your username
-    """
-
-    restart = True
-    root = None
-
-    request = urllib.request.Request(
-        url=USER_URL % username,
-        headers={'User-Agent': 'Mozilla/5.0'})
-
-    while restart:
-        with urllib.request.urlopen(request) as f:
-            data = f.read()
-            parser = etree.XMLParser(recover=True)
-            root = ET.fromstring(data, parser=parser)
-
-        no_cover = len(root.findall('.//*[@class="uco-cover no-cover"]')) == 0
-        cover = len(root.findall('.//*[@class="uco-cover "]')) == 0
-        restart = no_cover and cover
-
-    if root is None:
-        raise ValueError('Error when checking if profile is private')
-
-    field = root.findall('.//*[@class="uvi-numbers-item"]')
-    return len(field) == 0
-
-
-def get_number_of_pages(username: str, collection: str = 'film') -> int:
-    """
-    Return the number of pages in the `collection`.
-
-    :username: Your username
-    :collection: 'film' or 'tv'
-    """
-
-    if collection == 'film':
-        action = 'done'
-        choice = 'films'
+    if universe == 'movie':
+        int_univ = 1
+    elif universe == 'tvShow':
+        int_univ = 4
     else:
-        action = 'rating'
-        choice = 'series'
+        raise ValueError("`universe` is neither 'movie' nor 'tvShow'")
 
-    url = (USER_URL % username
-           + '/collection/%s' % action
-           + '/%s/all/all/all/all/all/all/list' % choice
-           + '/page-1')
+    int_univ = 1 if universe == 'movie' else 4
 
-    request = urllib.request.Request(
-        url=url,
-        headers={'User-Agent': 'Mozilla/5.0'})
+    url = 'https://www.senscritique.com/%s/collection?universe=%d' % (
+        username,
+        int_univ)
 
-    restart = True
-    root = None
-    while restart:
-        with urllib.request.urlopen(request) as f:
-            data = f.read()
-            parser = etree.XMLParser(recover=True)
-            root = ET.fromstring(data, parser=parser)
+    query = '{\"query\":\"query UserCollection($action: ProductAction, $categoryId: Int, $gameSystemId: Int, $genreId: Int, $isAgenda: Boolean, $keywords: String, $limit: Int, $month: Int, $offset: Int = %d, $order: CollectionSort, $showTvAgenda: Boolean, $universe: String = \\\"%s\\\", $username: String = \\\"%s\\\", $versus: Boolean, $year: Int, $yearDateDone: Int, $yearDateRelease: Int) {  user(username: $username) {    ...UserMinimal    ...ProfileStats    notificationSettings {      alertAgenda      __typename    }    collection(      action: $action      categoryId: $categoryId      gameSystemId: $gameSystemId      genreId: $genreId      isAgenda: $isAgenda      keywords: $keywords      limit: $limit      month: $month      offset: $offset      order: $order      showTvAgenda: $showTvAgenda      universe: $universe      versus: $versus      year: $year      yearDateDone: $yearDateDone      yearDateRelease: $yearDateRelease    ) {      total      filters {        action {          count          label          value          __typename        }        category {          count          label          value          __typename        }        gamesystem {          count          label          value          __typename        }        genre {          count          label          value          __typename        }        monthDateDone {          count          label          value          __typename        }        releaseDate {          count          label          value          __typename        }        universe {          count          label          value          __typename        }        yearDateDone {          count          label          value          __typename        }        __typename      }      products {        ...ProductList        episodeNumber        seasonNumber        totalEpisodes        preloadedParentTvShow {          ...ProductList          __typename        }        scoutsAverage {          average          count          __typename        }        currentUserInfos {          ...ProductUserInfos          __typename        }        otherUserInfos(username: $username) {          ...ProductUserInfos          lists {            id            label            listSubtype            url            __typename          }          review {            id            title            url            __typename          }          __typename        }        __typename      }      tvProducts {        infos {          channel {            id            label            __typename          }          showTimes {            id            dateEnd            dateStart            __typename          }          __typename        }        product {          ...ProductList          __typename        }        __typename      }      __typename    }    __typename  }}fragment UserMinimal on User {  ...UserNano  settings {    about    birthDate    country    dateLastSession    displayedName    email    firstName    gender    lastName    privacyName    privacyProfile    showAge    showProfileType    urlWebsite    username    zipCode    __typename  }  __typename}fragment UserNano on User {  following  id  isBlocked  isScout  name  url  username  medias {    avatar    __typename  }  __typename}fragment ProductList on Product {  category  channel  dateRelease  dateReleaseEarlyAccess  dateReleaseJP  dateReleaseOriginal  dateReleaseUS  displayedYear  duration  frenchReleaseDate  id  numberOfSeasons  originalRun  originalTitle  rating  slug  subtitle  title  universe  url  yearOfProduction  tvChannel {    name    url    __typename  }  countries {    id    name    __typename  }  gameSystems {    id    label    __typename  }  medias {    picture    __typename  }  genresInfos {    label    __typename  }  artists {    name    person_id    url    __typename  }  authors {    name    person_id    url    __typename  }  creators {    name    person_id    url    __typename  }  developers {    name    person_id    url    __typename  }  directors {    name    person_id    url    __typename  }  pencillers {    name    person_id    url    __typename  }  __typename}fragment ProductUserInfos on ProductUserInfos {  dateDone  hasStartedReview  isCurrent  id  isDone  isListed  isRecommended  isRejected  isReviewed  isWished  productId  rating  userId  numberEpisodeDone  lastEpisodeDone {    episodeNumber    id    season {      seasonNumber      id      episodes {        title        id        episodeNumber        __typename      }      __typename    }    __typename  }  gameSystem {    id    label    __typename  }  review {    url    __typename  }  __typename}fragment ProfileStats on User {  likePositiveCountStats {    contact    feed    list    paramIndex    review    total    __typename  }  stats {    collectionCount    diaryCount    listCount    followerCount    ratingCount    reviewCount    scoutCount    __typename  }  __typename}\"}' % (offset, universe, username)
 
-            elements = root.findall('.//*[@class="eipa-page"]/a')
+    x = requests.post(
+        url,
+        data=query,
+        headers={
+            'Host': 'apollo.senscritique.com',
+            'Content-Type': 'application/json',
+            'Referer': url,
+            'Accept': 'application/json'})
 
-        restart = (len(elements) == 0)
+    d = json.loads(x.text)
+    if d['data']['user'] is None:
+        raise ValueError(f'Member named `{username}` does not exist')
 
-    if root is None:
-        raise ValueError('Error when checking if profile is private')
+    collection = d['data']['user']['collection']
 
-    page = str(root.findall('.//*[@class="eipa-page"]/a')[-1].text)
-    if '.' in page:
-        page = page.replace('.', '')
+    if collection['total'] == 0:
+        return {'num_total': 0, 'collection': []}
 
-    return int(page)
+    results = {
+        'num_total': collection['total'],
+        'collection': [{
+            'Title': x['originalTitle'] if x['originalTitle'] else x['title'],
+            'Year': x['yearOfProduction'],
+            'rating10': x['otherUserInfos']['rating']}
+            for x in collection['products']]
+    }
+
+    return results
 
 
-def get_ratings_from_page(username: str, page_id: int,
-                          collection: str = 'film') -> List[Dict[str, str]]:
+def get_data(username: str, universe: str = 'movie'):
     """
-    Return movie/tv ratings from a given `page_id`-th page for `username`.
+    Send POST request
 
-    :username: Your username
-    :page_id: Specific page
-    :collection: 'film' or 'tv'
+    :username: Senscritique username
+    :universe: 'movie' or 'tvShow'
     """
-
-    if collection == 'film':
-        action = 'done'
-        choice = 'films'
-    else:
-        action = 'rating'
-        choice = 'series'
-
-    url = (USER_URL % username
-           + '/collection/%s' % action
-           + '/%s/all/all/all/all/all/all/list' % choice
-           + '/page-%d' % page_id)
-
-    request = urllib.request.Request(
-        url=url,
-        headers={'User-Agent': 'Mozilla/5.0'})
-
-    restart = True
-    root = None
-    while restart:
-        with urllib.request.urlopen(request) as f:
-            data = f.read()
-            parser = etree.XMLParser(recover=True)
-            root = ET.fromstring(data, parser=parser)
-
-            elements = root.findall('.//*[@class="elco-collection-item"]')
-
-        restart = (len(elements) == 0)
-
-    if root is None:
-        raise ValueError('Error when checking if profile is private')
-
-    notes = root.findall('.//*[@class="elrua-useraction-action "]')
-
-    titles, years = [], []
-    for elem in root.findall('.//*[@class="elco-product-detail"]'):
-        original_title = elem.find('*[@class="elco-original-title"]')
-        french_title = elem.find('*[@class="d-heading2 elco-title"]/a')
-
-        if original_title is not None:
-            titles.append(original_title)
-        else:
-            titles.append(french_title)
-
-        year = elem.find('*[@class="d-heading2 elco-title"]*[@class='
-                         '"elco-date"]')
-
-        if year is not None:
-            years.append(year)
-        else:
-            years.append(None)
 
     results = []
-    for n, t, y in zip(notes, titles, years):
-        _n = n.find('span')
-        if _n is None:
-            raise ValueError('Error when parsing a movie/tv show')
+    offset = 0
+    data = get_data_batch(username, offset, universe)
+    num_total = data['num_total']
+    len_data = len(data['collection'])
+    results += data['collection']
+    offset += len_data
 
-        _n = str(_n.text).lstrip().rstrip()
-        note = None if _n == '' else int(_n)
-
-        if y is not None:
-            year = y.text.replace('(', '').replace(')', '')
-        else:
-            year = y
-
-        title = t.text
-
-        results.append({'Title': title, 'Year': year, 'Rating10': note})
+    while offset < num_total:
+        data = get_data_batch(username, offset, universe)
+        len_data = len(data['collection'])
+        results += data['collection']
+        offset += len_data
 
     return results
 
@@ -203,24 +93,23 @@ def write_csv(path: str, data: List[Dict[str, str]], limit: int = 1900):
     :limit: Letterboxd has a limit of 1900 movies.
     """
 
-    import csv
+    if len(data) > 0:
+        labels = data[0].keys()
+        num_elements = len(data)
+        parts = num_elements//limit
 
-    labels = data[0].keys()
-    num_elements = len(data)
-    parts = num_elements//limit
+        for i in track(range(1, parts+2), 'Writing CSV parts...'):
+            if parts == 0:
+                output_path = path
+            else:
+                output_path = path.replace('.csv', '_%d.csv' % i)
 
-    for i in track(range(1, parts+2), 'Writing CSV parts...'):
-        if parts == 0:
-            output_path = path
-        else:
-            output_path = path.replace('.csv', '_%d.csv' % i)
+            with open(output_path, 'w') as f:
+                writer = csv.DictWriter(f, fieldnames=labels)
+                writer.writeheader()
 
-        with open(output_path, 'w') as f:
-            writer = csv.DictWriter(f, fieldnames=labels)
-            writer.writeheader()
-
-            for elem in data[(i-1)*limit:i*limit]:
-                writer.writerow(elem)
+                for elem in data[(i-1)*limit:i*limit]:
+                    writer.writerow(elem)
 
 
 if __name__ == '__main__':
@@ -247,35 +136,23 @@ if __name__ == '__main__':
         help='Output CSV path')
     p_args = parser.parse_args()
 
-    print('Checking your username ([bold violet]%s[/bold violet])...'
-          % p_args.username)
-
-    if not is_valid_profile(p_args.username):
-        raise ValueError('The username is not valid')
-    if is_private_profile(p_args.username):
-        raise ValueError('The account is private')
-
     if p_args.add_tv:
-        collections = ['film', 'tv']
+        universes = ['movie', 'tvShow']
         collection_names = ['films', 'TV shows']
     else:
-        collections = ['film']
+        universes = ['movie']
         collection_names = ['films']
 
     results = []
-    for collection, collection_name in zip(collections, collection_names):
-        print('Parsing your %s collection...' % collection_name)
-        num_pages = get_number_of_pages(
-            p_args.username, collection=collection)
-        print('Number of pages to parse: %d' % num_pages)
-
-        result = []
-        for page_id in track(range(1, num_pages+1), 'Parsing pages...'):
-            result += get_ratings_from_page(
-                p_args.username, page_id, collection=collection)
-
-        print('Number of %s: %d' % (collection_name, len(result)))
-        results += result[::-1]
+    for universe, collection_name in zip(universes, collection_names):
+        print(f'Collecting [bold violet]{collection_name}[/bold violet]...')
+        results += get_data(p_args.username, universe)
 
     write_csv(p_args.output, results)
-    print('[bold green]Done![/bold green]')
+
+    if len(results) > 0:
+        print('[bold green]Done:[/bold green] found %d elements!' % len(
+            results))
+    else:
+        print('[bold red]Done:[/bold red] found %d element :(' % len(
+            results))
