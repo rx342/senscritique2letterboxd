@@ -2,6 +2,7 @@ import csv
 import json
 import requests
 from typing import Dict, List
+from rich.table import Table
 from rich.progress import track
 
 
@@ -112,6 +113,25 @@ def write_csv(path: str, data: List[Dict[str, str]], limit: int = 1900):
                     writer.writerow(elem)
 
 
+def pretty_table(data: List[Dict[str, str]], num_elements: int = 5):
+    """
+    Pretty print table with `rich`
+
+    :data: List of dictionaries containing the data
+    :num_elements: Number of elements to print
+    """
+
+    table = Table(title=f'{num_elements} last elements', show_header=True)
+    table.add_column("Title")
+    table.add_column("Date")
+    table.add_column("Rating")
+
+    for x in data[:num_elements]:
+        table.add_row(x['Title'], x['Year'], x['Rating10'])
+
+    print(table)
+
+
 if __name__ == '__main__':
     import argparse
     from rich import print
@@ -148,11 +168,11 @@ if __name__ == '__main__':
         print(f'Collecting [bold violet]{collection_name}[/bold violet]...')
         results += get_data(p_args.username, universe)
 
-    write_csv(p_args.output, results)
-
     if len(results) > 0:
         print('[bold green]Done:[/bold green] found %d elements!' % len(
             results))
+        pretty_table(results, 5)
+        write_csv(p_args.output, results)
     else:
         print('[bold red]Done:[/bold red] found %d element :(' % len(
             results))
