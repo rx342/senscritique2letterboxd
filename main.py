@@ -51,8 +51,8 @@ def get_data_batch(username: str, offset: int = 0, universe: str = 'movie'):
         'num_total': collection['total'],
         'collection': [{
             'Title': x['originalTitle'] if x['originalTitle'] else x['title'],
-            'Year': x['yearOfProduction'],
-            'rating10': x['otherUserInfos']['rating']}
+            'Year': str(x['yearOfProduction']),
+            'Rating10': str(x['otherUserInfos']['rating'])}
             for x in collection['products']]
     }
 
