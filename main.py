@@ -2,8 +2,9 @@ import csv
 import json
 import requests
 from typing import Dict, List
+from rich import print
 from rich.table import Table
-from rich.progress import track
+from rich.progress import Progress, track
 
 
 def get_data_batch(username: str, offset: int = 0, universe: str = 'movie'):
@@ -76,11 +77,18 @@ def get_data(username: str, universe: str = 'movie'):
     results += data['collection']
     offset += len_data
 
-    while offset < num_total:
-        data = get_data_batch(username, offset, universe)
-        len_data = len(data['collection'])
-        results += data['collection']
-        offset += len_data
+    str_el = 'films' if universe == 'movie' else 'TV shows'
+
+    with Progress() as progress:
+        task = progress.add_task(
+            f'Collecting [bold violet]{str_el}[/bold violet]',
+            total=num_total)
+        while offset < num_total:
+            data = get_data_batch(username, offset, universe)
+            len_data = len(data['collection'])
+            results += data['collection']
+            offset += len_data
+            progress.update(task, advance=len_data)
 
     return results
 
@@ -99,11 +107,11 @@ def write_csv(path: str, data: List[Dict[str, str]], limit: int = 1900):
         num_elements = len(data)
         parts = num_elements//limit
 
-        for i in track(range(1, parts+2), 'Writing CSV parts...'):
+        for i in track(range(1, parts+2), 'Writing CSV parts'):
             if parts == 0:
                 output_path = path
             else:
-                output_path = path.replace('.csv', '_%d.csv' % i)
+                output_path = path.replace('.csv', f'_{i}.csv')
 
             with open(output_path, 'w') as f:
                 writer = csv.DictWriter(f, fieldnames=labels)
@@ -134,7 +142,6 @@ def pretty_table(data: List[Dict[str, str]], num_elements: int = 5):
 
 if __name__ == '__main__':
     import argparse
-    from rich import print
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -156,16 +163,10 @@ if __name__ == '__main__':
         help='Output CSV path')
     p_args = parser.parse_args()
 
-    if p_args.add_tv:
-        universes = ['movie', 'tvShow']
-        collection_names = ['films', 'TV shows']
-    else:
-        universes = ['movie']
-        collection_names = ['films']
-
+    universes = ['movie', 'tvShow'] if p_args.add_tv else ['movie']
     results = []
-    for universe, collection_name in zip(universes, collection_names):
-        print(f'Collecting [bold violet]{collection_name}[/bold violet]...')
+
+    for universe in universes:
         results += get_data(p_args.username, universe)
 
     if len(results) > 0:
