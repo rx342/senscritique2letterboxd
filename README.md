@@ -7,6 +7,22 @@ If you want to export your movies from [SensCritique](https://senscritique.com) 
 
 ## Requirements
 
+Please use one of these methods to install the requirements:
+
+### Nix
+
+If you have `nix` installed, there is a `flake.nix` with its `flake.lock` you can use.
+
+Either use `direnv` integration _or_ run
+
+```bash
+nix develop
+```
+
+and you will get a shell with everything installed.
+
+### Pip
+
 Please install the requirements with `pip`:
 
 ```bash
