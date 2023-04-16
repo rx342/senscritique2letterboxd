@@ -32,9 +32,9 @@ def get_data_batch(username: str, offset: int = 0, universe: str = 'movie'):
     query = ('{\"query\":\"query UserCollection($action: ProductAction, '
              '$categoryId: Int, $gameSystemId: Int, $genreId: Int, $isAgenda: '
              'Boolean, $keywords: String, $limit: Int, $month: Int, $offset: '
-             'Int = %d, $order: CollectionSort, $showTvAgenda: Boolean, '
-             '$universe: String = \\\"%s\\\", $username: String = '
-             '\\\"%s\\\", $versus: Boolean, $year: Int, $yearDateDone: Int, '
+             'Int, $order: CollectionSort, $showTvAgenda: Boolean, '
+             '$universe: String, $username: String, '
+             '$versus: Boolean, $year: Int, $yearDateDone: Int, '
              '$yearDateRelease: Int) { user(username: $username) { '
              '...UserMinimal ...ProfileStats notificationSettings '
              '{ alertAgenda __typename } collection( '
@@ -99,8 +99,13 @@ def get_data_batch(username: str, offset: int = 0, universe: str = 'movie'):
              'contact feed list paramIndex review total '
              '__typename } stats { collectionCount diaryCount '
              'listCount followerCount ratingCount reviewCount '
-             'scoutCount __typename } __typename}\"}' % (
-                offset, universe, username))
+             'scoutCount __typename } __typename}\"')
+    query += (', \"variables\":{'
+              '\"action\": \"DONE\", '
+              f'\"offset\": {offset}, '
+              f'\"universe\": \"{universe}\", '
+              f'\"username\": \"{username}\"'
+              '}}')
 
     x = requests.post(
         url,
