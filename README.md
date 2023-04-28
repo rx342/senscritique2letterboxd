@@ -9,6 +9,16 @@ If you want to export your movies from [SensCritique](https://senscritique.com) 
 
 Please use one of these methods to install the requirements:
 
+### Poetry
+
+Please install the requirements with:
+
+```bash
+poetry install
+```
+
+Do not forget to activate your virtual environment with `poetry shell` (or use `poetry run`).
+
 ### Nix
 
 If you have `nix` installed, there is a `flake.nix` with its `flake.lock` you can use.
