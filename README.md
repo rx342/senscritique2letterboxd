@@ -22,6 +22,7 @@ Do not forget to activate your virtual environment with `poetry shell` (or use `
 ### Nix
 
 If you have `nix` installed, there is a `flake.nix` with its `flake.lock` you can use.
+Python packages are managed with `poetry2nix`
 
 Either use `direnv` integration _or_ run
 
