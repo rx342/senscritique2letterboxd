@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "senscritique2letterboxd"
+version = "0.1.0"
+description = "Export your SensCritique data to Letterboxd"
+authors = ["rx342 <https://github.com/rx342>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+rich = "^13.3.5"
+requests = "^2.29.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
