@@ -10,13 +10,15 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
+        poetryEnv = pkgs.poetry2nix.mkPoetryEnv {
+          projectDir = ./.;
+          preferWheels = true;
+        };
       in {
         devShell = pkgs.mkShell {
-          nativeBuildInputs = pkgs.lib.attrsets.attrVals (
-            pkgs.lib.lists.init (
-              pkgs.lib.strings.splitString "\n" (builtins.readFile ./requirements.txt)
-            )
-          ) pkgs.python310Packages;
+          nativeBuildInputs = [
+            poetryEnv
+          ];
         };
       }
     );
