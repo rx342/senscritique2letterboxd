@@ -246,10 +246,8 @@ if __name__ == '__main__':
         results += get_data(p_args.username, universe)
 
     if len(results) > 0:
-        print('[bold green]Done:[/bold green] found %d elements!' % len(
-            results))
+        print(f'[bold green]Done:[/bold green] found {len(results)} elements!')
         pretty_table(results, 5)
         write_csv(p_args.output, results)
     else:
-        print('[bold red]Done:[/bold red] found %d element :(' % len(
-            results))
+        print(f'[bold red]Done:[/bold red] found {len(results)} element :(')
