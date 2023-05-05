@@ -1,9 +1,15 @@
+<div align="center">
+
 SensCritique2Letterboxd 🍿📊
 ============================
 
-If you want to export your movies from [SensCritique](https://senscritique.com) to [Letterboxd](https://letterboxd.com).
+A script to export your movies from [SensCritique](https://senscritique.com) to [Letterboxd](https://letterboxd.com).
 
 (It also works for *private* members!)
+
+![Screenshot](assets/screenshot.png)
+
+</div>
 
 ## Requirements
 
@@ -11,7 +17,7 @@ Please use one of these methods to install the requirements:
 
 ### Poetry
 
-Please install the requirements with:
+Install the requirements with:
 
 ```bash
 poetry install
@@ -34,7 +40,7 @@ and you will get a shell with everything installed.
 
 ### Pip
 
-Please install the requirements with `pip`:
+Install the requirements with `pip`:
 
 ```bash
 pip3 install -r requirements.txt
