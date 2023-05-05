@@ -1,13 +1,14 @@
 import csv
 import json
 import requests
-from typing import Dict, List
+from typing import Any, Dict, List
 from rich import print
 from rich.table import Table
 from rich.progress import Progress, track
 
 
-def get_data_batch(username: str, offset: int = 0, universe: str = 'movie'):
+def get_data_batch(username: str, offset: int = 0,
+                   universe: str = 'movie') -> Dict[str, Any]:
     """
     Send POST request
 
@@ -137,7 +138,7 @@ def get_data_batch(username: str, offset: int = 0, universe: str = 'movie'):
     return results
 
 
-def get_data(username: str, universe: str = 'movie'):
+def get_data(username: str, universe: str = 'movie') -> List[Dict[str, Any]]:
     """
     Send POST request
 
