@@ -131,13 +131,23 @@ def get_data_batch(username: str, offset: int = 0,
     if collection['total'] == 0:
         return {'num_total': 0, 'collection': []}
 
-    results = {
-        'num_total': collection['total'],
-        'collection': [{
+    items = []
+    for x in collection['products']:
+        item = {
             'Title': x['originalTitle'] if x['originalTitle'] else x['title'],
             'Year': str(x['yearOfProduction']),
-            'Rating10': str(x['otherUserInfos']['rating'])}
-            for x in collection['products']]
+            'Rating10': str(x['otherUserInfos']['rating']),
+        }
+
+        if action == 'DONE':
+            date = str(x['otherUserInfos']['dateDone']).split('T')[0]
+            item.update({'WatchedDate': date})
+
+        items.append(item)
+
+    results = {
+        'num_total': collection['total'],
+        'collection': items,
     }
 
     return results
@@ -205,21 +215,33 @@ def write_csv(path: str, data: List[Dict[str, str]], limit: int = 1900):
                     writer.writerow(elem)
 
 
-def pretty_table(data: List[Dict[str, str]], num_elements: int = 5):
+def pretty_table(data: List[Dict[str, str]], num_elements: int = 5,
+                 action: str = 'DONE'):
     """
     Pretty print table with `rich`
 
     :data: List of dictionaries containing the data
     :num_elements: Number of elements to print
+    :action: 'DONE' or 'WISH'
     """
+
+    if action not in ['DONE', 'WISH']:
+        raise ValueError("`action` is neither 'DONE' nor 'WISH'")
 
     table = Table(title=f'{num_elements} last elements', show_header=True)
     table.add_column("Title")
     table.add_column("Date")
     table.add_column("Rating")
 
+    if action == 'DONE':
+        table.add_column("Watched")
+
     for x in data[:num_elements]:
-        table.add_row(x['Title'], x['Year'], x['Rating10'])
+        if action == 'DONE':
+            table.add_row(
+                x['Title'], x['Year'], x['Rating10'], x['WatchedDate'])
+        else:
+            table.add_row(x['Title'], x['Year'], x['Rating10'])
 
     print(table)
 
@@ -261,7 +283,7 @@ if __name__ == '__main__':
 
     if len(results) > 0:
         print(f'[bold green]Done:[/bold green] found {len(results)} elements!')
-        pretty_table(results, 5)
+        pretty_table(results, 5, item_action)
         write_csv(p_args.output, results)
     else:
         print(f'[bold red]Done:[/bold red] found {len(results)} element :(')
