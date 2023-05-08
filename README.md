@@ -7,7 +7,7 @@ A script to export your movies from [SensCritique](https://senscritique.com) to 
 
 (It also works for *private* members!)
 
-Supports: <b>watched</b> items and <b>watchlist</b>
+Supports: <b>watched</b> items (with <i>ratings</i>, <i>watched date</i>) and <b>watchlist</b>
 
 ![Screenshot](assets/screenshot.png)
 
