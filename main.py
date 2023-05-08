@@ -8,13 +8,15 @@ from rich.progress import Progress, track
 
 
 def get_data_batch(username: str, offset: int = 0,
-                   universe: str = 'movie') -> Dict[str, Any]:
+                   universe: str = 'movie', action: str = 'DONE') \
+                    -> Dict[str, Any]:
     """
     Send POST request
 
     :username: Senscritique username
     :offset: Offset value
     :universe: 'movie' or 'tvShow'
+    :action: 'DONE' or 'WISH'
     """
 
     if universe == 'movie':
@@ -23,6 +25,9 @@ def get_data_batch(username: str, offset: int = 0,
         int_univ = 4
     else:
         raise ValueError("`universe` is neither 'movie' nor 'tvShow'")
+
+    if action not in ['DONE', 'WISH']:
+        raise ValueError("`action` is neither 'DONE' nor 'WISH'")
 
     int_univ = 1 if universe == 'movie' else 4
 
@@ -102,7 +107,7 @@ def get_data_batch(username: str, offset: int = 0,
              'listCount followerCount ratingCount reviewCount '
              'scoutCount __typename } __typename}\"')
     query += (', \"variables\":{'
-              '\"action\": \"DONE\", '
+              f'\"action\": \"{action}\", '
               f'\"offset\": {offset}, '
               f'\"universe\": \"{universe}\", '
               f'\"username\": \"{username}\"'
@@ -138,17 +143,19 @@ def get_data_batch(username: str, offset: int = 0,
     return results
 
 
-def get_data(username: str, universe: str = 'movie') -> List[Dict[str, Any]]:
+def get_data(username: str, universe: str = 'movie', action: str = 'DONE') \
+        -> List[Dict[str, Any]]:
     """
     Send POST request
 
     :username: Senscritique username
     :universe: 'movie' or 'tvShow'
+    :action: 'DONE' or 'WISH'
     """
 
     results = []
     offset = 0
-    data = get_data_batch(username, offset, universe)
+    data = get_data_batch(username, offset, universe, action)
     num_total = data['num_total']
     len_data = len(data['collection'])
     results += data['collection']
@@ -161,7 +168,7 @@ def get_data(username: str, universe: str = 'movie') -> List[Dict[str, Any]]:
             f'Collecting [bold violet]{str_el}[/bold violet]',
             total=num_total)
         while offset < num_total:
-            data = get_data_batch(username, offset, universe)
+            data = get_data_batch(username, offset, universe, action)
             len_data = len(data['collection'])
             results += data['collection']
             offset += len_data
@@ -238,13 +245,19 @@ if __name__ == '__main__':
         required=False,
         default='output.csv',
         help='Output CSV path')
+    parser.add_argument(
+        '--watchlist_only',
+        default=False,
+        action='store_true',
+        help='Extract only watchlist items')
     p_args = parser.parse_args()
 
+    item_action = 'WISH' if p_args.watchlist_only else 'DONE'
     universes = ['movie', 'tvShow'] if p_args.add_tv else ['movie']
     results = []
 
     for universe in universes:
-        results += get_data(p_args.username, universe)
+        results += get_data(p_args.username, universe, item_action)
 
     if len(results) > 0:
         print(f'[bold green]Done:[/bold green] found {len(results)} elements!')

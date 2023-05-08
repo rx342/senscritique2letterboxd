@@ -7,6 +7,8 @@ A script to export your movies from [SensCritique](https://senscritique.com) to 
 
 (It also works for *private* members!)
 
+Supports: <b>watched</b> items and <b>watchlist</b>
+
 ![Screenshot](assets/screenshot.png)
 
 </div>
@@ -48,6 +50,8 @@ pip3 install -r requirements.txt
 
 ## Usage
 
+### Watched
+
 To export your movies:
 
 ```bash
@@ -58,6 +62,14 @@ If you also want to add your TV shows, please run:
 
 ```bash
 python3 main.py --username {USERNAME} --output movies.csv --add_tv
+```
+
+### Watchlist
+
+To export the movies you *want* to watch (named "Watchlist" on Letterboxd):
+
+```bash
+python3 main.py --username {USERNAME} --output watchlist.csv --watchlist_only
 ```
 
 And [import](https://letterboxd.com/import/) your CSV ✨.
