@@ -7,7 +7,7 @@ A script to export your movies from [SensCritique](https://senscritique.com) to 
 
 (It also works for *private* members!)
 
-Supports: <b>watched</b> items (with <i>ratings</i>, <i>watched date</i>) and <b>watchlist</b>
+Supports: <b>watched</b> items (with <i>ratings</i>, <i>watched date</i>, <i>reviews</i>) and <b>watchlist</b>
 
 ![Screenshot](assets/screenshot.png)
 
@@ -30,7 +30,7 @@ Do not forget to activate your virtual environment with `poetry shell` (or use `
 ### Nix
 
 If you have `nix` installed, there is a `flake.nix` with its `flake.lock` you can use.
-Python packages are managed with `poetry2nix`
+Python packages are managed with `poetry2nix`.
 
 Either use `direnv` integration _or_ run
 
@@ -62,6 +62,12 @@ If you also want to add your TV shows, please run:
 
 ```bash
 python3 main.py --username {USERNAME} --output movies.csv --add_tv
+```
+
+Finally if you want add your reviews:
+
+```bash
+python3 main.py --username {USERNAME} --output movies.csv --add_reviews
 ```
 
 ### Watchlist

@@ -7,7 +7,52 @@ from rich.table import Table
 from rich.progress import Progress, track
 
 
-def get_data_batch(username: str, offset: int = 0,
+def get_review(review_url: str) -> str:
+    """
+    Return the HTML review
+
+    :review_url: The review URL
+    """
+
+    from bs4 import BeautifulSoup, Tag
+    from urllib.request import Request, urlopen
+
+    result = ''
+
+    url = f"https://www.senscritique.com{review_url}"
+    request = Request(
+        url=url,
+        headers={'User-Agent': 'Mozilla/5.0'})
+
+    with urlopen(request) as f:
+        data = f.read()
+        soup = BeautifulSoup(data, 'html.parser')
+
+    title = soup.find('h1', attrs={'data-testid': 'review-title'})
+    if title is not None:
+        title = title.get_text()
+        result = f'<b>{title}</b>'
+
+    review = soup.find('div', attrs={'data-testid': 'review-content'})
+    if review is not None and isinstance(review, Tag):
+        for elem in review.find_all('br'):
+            elem.replace_with('\n\n' + elem.text)
+
+        for elem in review.find_all('strong'):
+            new_tag = soup.new_tag('b')
+            new_tag.string = elem.get_text()
+            elem.replace_with(new_tag)
+
+        for elem in review.find_all('a', href=True):
+            del elem['rel'], elem['target']
+
+        review = ''.join(map(str, review.contents))
+        result += '\n\n' + str(review)
+
+    return result
+
+
+def get_data_batch(username: str, offset: int = 0, add_review: bool = False,
                    universe: str = 'movie', action: str = 'DONE') \
                     -> Dict[str, Any]:
     """
@@ -15,6 +60,7 @@ def get_data_batch(username: str, offset: int = 0,
 
     :username: Senscritique username
     :offset: Offset value
+    :add_review: Add review
     :universe: 'movie' or 'tvShow'
     :action: 'DONE' or 'WISH'
     """
@@ -149,6 +195,14 @@ def get_data_batch(username: str, offset: int = 0,
 
             item.update({'WatchedDate': date})
 
+            if add_review:
+                if x['otherUserInfos']['isReviewed']:
+                    review_url = x['otherUserInfos']['review']['url']
+                    review = get_review(review_url)
+                    item.update({'Review': review})
+                else:
+                    item.update({'Review': ''})
+
         items.append(item)
 
     results = {
@@ -159,19 +213,21 @@ def get_data_batch(username: str, offset: int = 0,
     return results
 
 
-def get_data(username: str, universe: str = 'movie', action: str = 'DONE') \
+def get_data(username: str, universe: str = 'movie', add_review: bool = False,
+             action: str = 'DONE') \
         -> List[Dict[str, Any]]:
     """
     Send POST request
 
     :username: Senscritique username
     :universe: 'movie' or 'tvShow'
+    :add_review: Add review
     :action: 'DONE' or 'WISH'
     """
 
     results = []
     offset = 0
-    data = get_data_batch(username, offset, universe, action)
+    data = get_data_batch(username, offset, add_review, universe, action)
     num_total = data['num_total']
     len_data = len(data['collection'])
     results += data['collection']
@@ -184,7 +240,13 @@ def get_data(username: str, universe: str = 'movie', action: str = 'DONE') \
             f'Collecting [bold violet]{str_el}[/bold violet]',
             total=num_total)
         while offset < num_total:
-            data = get_data_batch(username, offset, universe, action)
+            data = get_data_batch(
+                username,
+                offset,
+                add_review,
+                universe,
+                action)
+
             len_data = len(data['collection'])
             results += data['collection']
             offset += len_data
@@ -222,34 +284,48 @@ def write_csv(path: str, data: List[Dict[str, str]], limit: int = 1900):
 
 
 def pretty_table(data: List[Dict[str, str]], num_elements: int = 5,
-                 action: str = 'DONE'):
+                 lim_review: int = 70):
     """
     Pretty print table with `rich`
 
     :data: List of dictionaries containing the data
     :num_elements: Number of elements to print
-    :action: 'DONE' or 'WISH'
+    :lim_review: Number of maximal characters in the review
     """
 
-    if action not in ['DONE', 'WISH']:
-        raise ValueError("`action` is neither 'DONE' nor 'WISH'")
+    if len(data):
+        add_watched_date = False
+        add_review = False
 
-    table = Table(title=f'{num_elements} last elements', show_header=True)
-    table.add_column("Title")
-    table.add_column("Date")
-    table.add_column("Rating")
+        table = Table(title=f'{num_elements} last elements', show_header=True)
+        table.add_column('Title')
+        table.add_column('Date')
+        table.add_column('Rating')
 
-    if action == 'DONE':
-        table.add_column("Watched")
+        add_watched_date = 'WatchedDate' in data[0]
+        if add_watched_date:
+            table.add_column('Watched')
+        add_review = 'Review' in data[0]
+        if add_review:
+            table.add_column('Review')
 
-    for x in data[:num_elements]:
-        if action == 'DONE':
-            table.add_row(
-                x['Title'], x['Year'], x['Rating10'], x['WatchedDate'])
-        else:
-            table.add_row(x['Title'], x['Year'], x['Rating10'])
+        for x in data[:num_elements]:
+            items = [x['Title'], x['Year'], x['Rating10']]
 
-    print(table)
+            if add_watched_date:
+                items.append(x['WatchedDate'])
+            if add_review:
+                review = x['Review']
+                if len(review) > lim_review:
+                    short_review = review[:lim_review] + '...'
+                else:
+                    short_review = review
+
+                items.append(short_review)
+
+            table.add_row(*items)
+
+        print(table)
 
 
 if __name__ == '__main__':
@@ -274,6 +350,11 @@ if __name__ == '__main__':
         default='output.csv',
         help='Output CSV path')
     parser.add_argument(
+        '--add_reviews',
+        default=False,
+        action='store_true',
+        help='Add reviews or not')
+    parser.add_argument(
         '--watchlist_only',
         default=False,
         action='store_true',
@@ -285,11 +366,15 @@ if __name__ == '__main__':
     results = []
 
     for universe in universes:
-        results += get_data(p_args.username, universe, item_action)
+        results += get_data(
+            p_args.username,
+            universe,
+            p_args.add_reviews,
+            item_action)
 
     if len(results) > 0:
         print(f'[bold green]Done:[/bold green] found {len(results)} elements!')
-        pretty_table(results, 5, item_action)
+        pretty_table(results, num_elements=5, lim_review=70)
         write_csv(p_args.output, results)
     else:
         print(f'[bold red]Done:[/bold red] found {len(results)} element :(')
