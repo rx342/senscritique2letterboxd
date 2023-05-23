@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.10"
 rich = "^13.3.5"
 requests = "^2.29.0"
+beautifulsoup4 = "^4.12.2"
 
 
 [build-system]
