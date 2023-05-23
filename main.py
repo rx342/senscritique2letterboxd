@@ -140,7 +140,13 @@ def get_data_batch(username: str, offset: int = 0,
         }
 
         if action == 'DONE':
-            date = str(x['otherUserInfos']['dateDone']).split('T')[0]
+            date = x['otherUserInfos']['dateDone']
+
+            if date is None:
+                date = ''
+            else:
+                date = str(date).split('T')[0]
+
             item.update({'WatchedDate': date})
 
         items.append(item)
