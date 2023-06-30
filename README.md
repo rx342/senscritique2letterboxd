@@ -35,10 +35,10 @@ Python packages are managed with `poetry2nix`.
 Either use `direnv` integration _or_ run
 
 ```bash
-nix develop
+nix develop github:rx342/senscritique2letterboxd
 ```
 
-and you will get a shell with everything installed.
+without the need to clone the repo.
 
 ### Pip
 
@@ -79,3 +79,12 @@ python3 main.py --username {USERNAME} --output watchlist.csv --watchlist_only
 ```
 
 And [import](https://letterboxd.com/import/) your CSV ✨.
+
+### Nix
+
+If you use Nix you do not need to clone the repo, just replace the `python3 main.py` with `nix run github:rx342/senscritique2letterboxd --`.
+For instance:
+
+```bash
+nix run github:rx342/senscritique2letterboxd -- --username {USERNAME} --output movies.csv --add_tv
+```
