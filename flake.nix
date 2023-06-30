@@ -14,7 +14,13 @@
           projectDir = ./.;
           preferWheels = true;
         };
-      in {
+      in
+      {
+        apps.default = {
+          type = "app";
+          program = ./main.py;
+        };
+
         devShell = pkgs.mkShell {
           nativeBuildInputs = [
             poetryEnv
