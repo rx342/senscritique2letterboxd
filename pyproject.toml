@@ -11,6 +11,8 @@ rich = "^13.3.5"
 requests = "^2.29.0"
 beautifulsoup4 = "^4.12.2"
 
+[tool.isort]
+profile = "black"
 
 [build-system]
 requires = ["poetry-core"]
