@@ -2,11 +2,12 @@
 
 import csv
 import json
-import requests
 from typing import Any, Dict, List
+
+import requests
 from rich import print
-from rich.table import Table
 from rich.progress import Progress, track
+from rich.table import Table
 
 
 def get_review(review_url: str) -> str:
@@ -16,8 +17,9 @@ def get_review(review_url: str) -> str:
     :review_url: The review URL
     """
 
-    from bs4 import BeautifulSoup, Tag
     from urllib.request import Request, urlopen
+
+    from bs4 import BeautifulSoup, Tag
 
     result = ""
 
