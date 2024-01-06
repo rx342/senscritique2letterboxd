@@ -9,7 +9,7 @@
   outputs = { nixpkgs, flake-utils, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        pkgs = import nixpkgs { inherit system; };
+        pkgs = nixpkgs.legacyPackages.${system};
         poetryEnv = pkgs.poetry2nix.mkPoetryEnv {
           projectDir = ./.;
           preferWheels = true;
