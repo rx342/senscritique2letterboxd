@@ -29,16 +29,7 @@ Do not forget to activate your virtual environment with `poetry shell` (or use `
 
 ### Nix
 
-If you have `nix` installed, there is a `flake.nix` with its `flake.lock` you can use.
-Python packages are managed with `poetry2nix`.
-
-Either use `direnv` integration _or_ run
-
-```bash
-nix develop github:rx342/senscritique2letterboxd
-```
-
-without the need to clone the repo.
+Make sure you enabled flakes.
 
 ### Pip
 
@@ -84,9 +75,9 @@ And [import](https://letterboxd.com/import/) your CSV ✨.
 
 ### Nix
 
-If you use Nix you do not need to clone the repo, just replace the `python3 main.py` with `nix run github:rx342/senscritique2letterboxd --`.
+Prepend any command with `nix develop --command`.
 For instance:
 
 ```bash
-nix run github:rx342/senscritique2letterboxd -- --username {USERNAME} --output movies.csv --add_tv
+nix develop --command python3 main.py --username {USERNAME} --output movies.csv
 ```
