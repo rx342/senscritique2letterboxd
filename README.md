@@ -50,6 +50,8 @@ pip3 install -r requirements.txt
 
 ## Usage
 
+Please replace every `{USERNAME}` with your username.
+
 ### Watched
 
 To export your movies:
