@@ -17,11 +17,6 @@
         };
       in
       {
-        apps.default = {
-          type = "app";
-          program = ./main.py;
-        };
-
         devShell = pkgs.mkShell {
           nativeBuildInputs = [
             poetryEnv
