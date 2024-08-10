@@ -10,11 +10,12 @@ from rich.progress import Progress, track
 from rich.table import Table
 
 
-def get_review(review_url: str) -> str:
+def get_review(review_url: str, user_agent: str) -> str:
     """
     Return the HTML review
 
     :review_url: The review URL
+    :user_agent: User agent
     """
 
     from urllib.request import Request, urlopen
@@ -24,7 +25,7 @@ def get_review(review_url: str) -> str:
     result = ""
 
     url = f"https://www.senscritique.com{review_url}"
-    request = Request(url=url, headers={"User-Agent": "Mozilla/5.0"})
+    request = Request(url=url, headers={"User-Agent": user_agent})
 
     with urlopen(request) as f:
         data = f.read()
@@ -56,6 +57,7 @@ def get_review(review_url: str) -> str:
 
 def get_data_batch(
     username: str,
+    user_agent: str,
     offset: int = 0,
     add_review: bool = False,
     universe: str = "movie",
@@ -65,6 +67,7 @@ def get_data_batch(
     Send POST request
 
     :username: Senscritique username
+    :user_agent: User agent
     :offset: Offset value
     :add_review: Add review
     :universe: 'movie' or 'tvShow'
@@ -178,6 +181,7 @@ def get_data_batch(
             "Content-Type": "application/json",
             "Referer": url,
             "Accept": "application/json",
+            "User-Agent": user_agent,
         },
     )
 
@@ -211,7 +215,7 @@ def get_data_batch(
             if add_review:
                 if x["otherUserInfos"]["isReviewed"]:
                     review_url = x["otherUserInfos"]["review"]["url"]
-                    review = get_review(review_url)
+                    review = get_review(review_url, user_agent)
                     item.update({"Review": review})
                 else:
                     item.update({"Review": ""})
@@ -228,6 +232,7 @@ def get_data_batch(
 
 def get_data(
     username: str,
+    user_agent: str,
     universe: str = "movie",
     add_review: bool = False,
     action: str = "DONE",
@@ -236,6 +241,7 @@ def get_data(
     Send POST request
 
     :username: Senscritique username
+    :user_agent: User agent
     :universe: 'movie' or 'tvShow'
     :add_review: Add review
     :action: 'DONE' or 'WISH'
@@ -243,7 +249,7 @@ def get_data(
 
     results = []
     offset = 0
-    data = get_data_batch(username, offset, add_review, universe, action)
+    data = get_data_batch(username, user_agent, offset, add_review, universe, action)
     num_total = data["num_total"]
     len_data = len(data["collection"])
     results += data["collection"]
@@ -256,7 +262,9 @@ def get_data(
             f"Collecting [bold violet]{str_el}[/bold violet]", total=num_total
         )
         while offset < num_total:
-            data = get_data_batch(username, offset, add_review, universe, action)
+            data = get_data_batch(
+                username, user_agent, offset, add_review, universe, action
+            )
 
             len_data = len(data["collection"])
             results += data["collection"]
@@ -366,6 +374,13 @@ if __name__ == "__main__":
         action="store_true",
         help="Extract only watchlist items",
     )
+    parser.add_argument(
+        "--user_agent",
+        type=str,
+        required=False,
+        default="Mozilla/5.0",
+        help="User agent",
+    )
     p_args = parser.parse_args()
 
     item_action = "WISH" if p_args.watchlist_only else "DONE"
@@ -373,7 +388,13 @@ if __name__ == "__main__":
     results = []
 
     for universe in universes:
-        results += get_data(p_args.username, universe, p_args.add_reviews, item_action)
+        results += get_data(
+            p_args.username,
+            p_args.user_agent,
+            universe,
+            p_args.add_reviews,
+            item_action,
+        )
 
     if len(results) > 0:
         print(f"[bold green]Done:[/bold green] found {len(results)} elements!")
