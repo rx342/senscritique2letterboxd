@@ -43,3 +43,27 @@ jobs:
         run: |
           nix develop --build --profile ci .#
           nix develop ./ci -c nixfmt --check .
+
+  pytest:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.7
+      - name: Install python
+        uses: actions/setup-python@v5.1.1
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v3.0.0
+      - name: Setup a local virtual environment
+        run: |
+          poetry config virtualenvs.create true --local
+          poetry config virtualenvs.in-project true --local
+      - name: Use caching for virtual environment
+        uses: actions/cache@v4.0.2
+        with:
+          path: ./.venv
+          key: venv-${{ hashFiles('poetry.lock') }}
+      - name: Install project dependencies
+        run: poetry install
+      - name: pytest
+        run: poetry run pytest
