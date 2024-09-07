@@ -1,7 +1,7 @@
 <div align="center">
 
-SensCritique2Letterboxd 🍿📊
-============================
+SensCritique2Letterboxd (s2l) 🍿📊
+==================================
 
 A script to export your movies from [SensCritique](https://senscritique.com) to [Letterboxd](https://letterboxd.com).
 
@@ -25,18 +25,18 @@ Install the requirements with:
 poetry install
 ```
 
-Do not forget to activate your virtual environment with `poetry shell` (or use `poetry run`).
+And you can run any commands with
+
+```bash
+poetry run s2l ...
+```
 
 ### Nix
 
-Make sure you enabled flakes.
-
-### Pip
-
-Install the requirements with `pip`:
+Make sure you enabled flakes and you can run any commands with
 
 ```bash
-pip3 install -r requirements.txt
+nix run github:rx342/senscritique2letterboxd#s2l ...
 ```
 
 ## Usage
@@ -48,19 +48,19 @@ Please replace every `{USERNAME}` with your username.
 To export your movies:
 
 ```bash
-python3 main.py --username {USERNAME} --output movies.csv
+s2l --username {USERNAME} --output movies.csv
 ```
 
 If you also want to add your TV shows, please run:
 
 ```bash
-python3 main.py --username {USERNAME} --output movies.csv --add_tv
+s2l --username {USERNAME} --output movies.csv --add_tv
 ```
 
 Finally if you want add your reviews:
 
 ```bash
-python3 main.py --username {USERNAME} --output movies.csv --add_reviews
+s2l --username {USERNAME} --output movies.csv --add_reviews
 ```
 
 ### Watchlist
@@ -68,16 +68,7 @@ python3 main.py --username {USERNAME} --output movies.csv --add_reviews
 To export the movies you *want* to watch (named "Watchlist" on Letterboxd):
 
 ```bash
-python3 main.py --username {USERNAME} --output watchlist.csv --watchlist_only
+s2l --username {USERNAME} --output watchlist.csv --watchlist_only
 ```
 
 And [import](https://letterboxd.com/import/) your CSV ✨.
-
-### Nix
-
-Prepend any command with `nix develop --command`.
-For instance:
-
-```bash
-nix develop --command python3 main.py --username {USERNAME} --output movies.csv
-```
