@@ -7,10 +7,30 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/s2l
+    permissions:
+      id-token: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.7
-      - name: Build and publish to pypi
-        uses: JRubics/poetry-publish@v2.0
+      - name: Install python
+        uses: actions/setup-python@v5.1.1
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v3.0.0
+      - name: Setup a local virtual environment
+        run: |
+          poetry config virtualenvs.create true --local
+          poetry config virtualenvs.in-project true --local
+      - name: Use caching for virtual environment
+        uses: actions/cache@v4.0.2
         with:
-          pypi_token: ${{ secrets.PYPI_TOKEN }}
+          path: ./.venv
+          key: venv-${{ hashFiles('poetry.lock') }}
+      - name: Install project dependencies
+        run: poetry install
+      - name: Build package
+        run: poetry build
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
