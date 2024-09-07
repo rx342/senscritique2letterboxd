@@ -13,30 +13,24 @@ Supports: <b>watched</b> items (with <i>ratings</i>, <i>watched date</i>, <i>rev
 
 </div>
 
-## Requirements
+## Installation
 
-Please use one of these methods to install the requirements:
+Please use one of these methods to install the package.
 
-### Poetry
+### Pip
 
-Install the requirements with:
-
-```bash
-poetry install
-```
-
-And you can run any commands with
+Install the package with:
 
 ```bash
-poetry run s2l ...
+pip install s2l
 ```
 
 ### Nix
 
-Make sure you enabled flakes and you can run any commands with
+You can build the binary `s2l` with `nix` (flakes enabled) with:
 
 ```bash
-nix run github:rx342/senscritique2letterboxd#s2l ...
+nix run github:rx342/senscritique2letterboxd#s2l
 ```
 
 ## Usage
