@@ -348,7 +348,7 @@ def pretty_table(
         print(table)
 
 
-if __name__ == "__main__":
+def main():
     import argparse
 
     parser = argparse.ArgumentParser()

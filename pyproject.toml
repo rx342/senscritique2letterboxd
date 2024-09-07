@@ -1,9 +1,13 @@
 [tool.poetry]
-name = "senscritique2letterboxd"
-version = "0.1.0"
+name = "s2l"
+version = "0.1.2"
 description = "Export your SensCritique data to Letterboxd"
-authors = ["rx342 <https://github.com/rx342>"]
+authors = ["rx342"]
 readme = "README.md"
+
+[project.urls]
+Homepage = "https://github.com/rx342/senscritique2letterboxd"
+Issues = "https://github.com/rx342/senscritique2letterboxd/issues"
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -15,6 +19,9 @@ pytest = "^8.3.2"
 
 [tool.isort]
 profile = "black"
+
+[tool.poetry.scripts]
+s2l = "s2l.main:main"
 
 [build-system]
 requires = ["poetry-core"]
