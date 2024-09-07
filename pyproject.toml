@@ -5,6 +5,10 @@ description = "Export your SensCritique data to Letterboxd"
 authors = ["rx342"]
 readme = "README.md"
 
+[project.urls]
+Homepage = "https://github.com/rx342/senscritique2letterboxd"
+Issues = "https://github.com/rx342/senscritique2letterboxd/issues"
+
 [tool.poetry.dependencies]
 python = "^3.10"
 rich = "^13.3.5"
