@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "s2l"
-version = "0.1.0"
+version = "0.1.2"
 description = "Export your SensCritique data to Letterboxd"
 authors = ["rx342"]
 readme = "README.md"
