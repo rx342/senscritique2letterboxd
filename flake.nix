@@ -44,6 +44,10 @@
             type = "app";
             program = "${poetryApp}/bin/s2l";
           };
+          pytest = {
+            type = "app";
+            program = "${poetryEnv}/bin/pytest";
+          };
           default = s2l;
         };
 
