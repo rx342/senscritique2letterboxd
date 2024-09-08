@@ -27,7 +27,7 @@ pip install s2l
 
 ### Nix
 
-You can build the binary `s2l` with `nix` (flakes enabled) with:
+You can build and run the binary `s2l` using `nix` (flakes enabled) with:
 
 ```bash
 nix run github:rx342/senscritique2letterboxd#s2l
