@@ -2,7 +2,7 @@
 
 import csv
 import json
-from typing import Any, Dict, List
+from typing import Any
 
 import requests
 from rich import print
@@ -62,7 +62,7 @@ def get_data_batch(
     add_review: bool = False,
     universe: str = "movie",
     action: str = "DONE",
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Send POST request
 
@@ -236,7 +236,7 @@ def get_data(
     universe: str = "movie",
     add_review: bool = False,
     action: str = "DONE",
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """
     Send POST request
 
@@ -274,7 +274,7 @@ def get_data(
     return results
 
 
-def write_csv(path: str, data: List[Dict[str, str]], limit: int = 1900):
+def write_csv(path: str, data: list[dict[str, str]], limit: int = 1900):
     """
     Write the CSV.
 
@@ -303,7 +303,7 @@ def write_csv(path: str, data: List[Dict[str, str]], limit: int = 1900):
 
 
 def pretty_table(
-    data: List[Dict[str, str]], num_elements: int = 5, lim_review: int = 70
+    data: list[dict[str, str]], num_elements: int = 5, lim_review: int = 70
 ):
     """
     Pretty print table with `rich`
