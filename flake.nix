@@ -37,6 +37,11 @@
         default = dev;
       };
 
+      packages.${system} = rec {
+        s2l = poetryApp;
+        default = s2l;
+      };
+
       apps.${system} = rec {
         s2l = {
           type = "app";
