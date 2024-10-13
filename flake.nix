@@ -29,11 +29,17 @@
       devShells.${system} = rec {
         dev = pkgs.mkShell {
           nativeBuildInputs = [
+            pkgs.poetry
             poetryEnv
             formatter
           ];
         };
         default = dev;
+      };
+
+      packages.${system} = rec {
+        s2l = poetryApp;
+        default = s2l;
       };
 
       apps.${system} = rec {
