@@ -294,7 +294,7 @@ def write_csv(path: str, data: list[dict[str, str]], limit: int = 1900):
             else:
                 output_path = path.replace(".csv", f"_{i}.csv")
 
-            with open(output_path, "w") as f:
+            with open(output_path, "w", encoding="utf-8-sig") as f:
                 writer = csv.DictWriter(f, fieldnames=labels)
                 writer.writeheader()
 
