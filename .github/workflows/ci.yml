@@ -10,17 +10,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.2
       - name: Install python
-        uses: actions/setup-python@v5.1.1
+        uses: actions/setup-python@v5.4.0
       - name: Install poetry
-        uses: abatilo/actions-poetry@v3.0.0
+        uses: abatilo/actions-poetry@v3.0.2
       - name: Setup a local virtual environment
         run: |
           poetry config virtualenvs.create true --local
           poetry config virtualenvs.in-project true --local
       - name: Use caching for virtual environment
-        uses: actions/cache@v4.0.2
+        uses: actions/cache@v4.2.0
         with:
           path: ./.venv
           key: venv-${{ hashFiles('poetry.lock') }}
@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.2
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
       - name: Enable cache
@@ -49,17 +49,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.2
       - name: Install python
-        uses: actions/setup-python@v5.1.1
+        uses: actions/setup-python@v5.4.0
       - name: Install poetry
-        uses: abatilo/actions-poetry@v3.0.0
+        uses: abatilo/actions-poetry@v3.0.2
       - name: Setup a local virtual environment
         run: |
           poetry config virtualenvs.create true --local
           poetry config virtualenvs.in-project true --local
       - name: Use caching for virtual environment
-        uses: actions/cache@v4.0.2
+        uses: actions/cache@v4.2.0
         with:
           path: ./.venv
           key: venv-${{ hashFiles('poetry.lock') }}
