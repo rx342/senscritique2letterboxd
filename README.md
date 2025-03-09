@@ -26,6 +26,14 @@ pip install s2l
 
 ## Usage
 
+### 🌟 New feature (+2.0): interactive mode
+
+```bash
+s2l -i
+```
+
+### CLI
+
 Please replace every `{USERNAME}` with your username.
 
 ### Watched
