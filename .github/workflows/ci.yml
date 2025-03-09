@@ -36,13 +36,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
       - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@main
-      - name: Enable cache
-        uses: DeterminateSystems/magic-nix-cache-action@main
+        uses: cachix/install-nix-action@v30
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
       - name: Nix format
-        run: |
-          nix develop --build --profile ci .#
-          nix develop ./ci -c nixfmt --check .
+        run: nix-shell -p nixfmt-rfc-style --run "nixfmt --check ."
 
   pytest:
     name: Unit tests
