@@ -1,13 +1,13 @@
 [project]
 name = "s2l"
-version = "0.1.3"
+version = "0.2.0"
 description = "Export your SensCritique data to Letterboxd"
 authors = [ {name = "rx342"} ]
 readme = "README.md"
 
 [tool.poetry]
 name = "s2l"
-version = "0.1.3"
+version = "0.2.0"
 
 [project.urls]
 Homepage = "https://github.com/rx342/senscritique2letterboxd"
