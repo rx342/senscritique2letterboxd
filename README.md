@@ -36,7 +36,7 @@ s2l -i
 
 Please replace every `{USERNAME}` with your username.
 
-### Watched
+#### Watched
 
 To export your movies:
 
@@ -56,7 +56,7 @@ Finally if you want add your reviews:
 s2l --username {USERNAME} --output movies.csv --add_reviews
 ```
 
-### Watchlist
+#### Watchlist
 
 To export the movies you _want_ to watch (named "Watchlist" on Letterboxd):
 
