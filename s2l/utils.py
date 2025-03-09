@@ -9,11 +9,20 @@ from rich.table import Table
 
 
 def get_review(review_url: str, user_agent: str) -> str:
-    """
-    Return the HTML review
+    """Return the HTML review
 
-    :review_url: The review URL
-    :user_agent: User agent
+    Parameters
+    ----------
+    review_url : str
+        The review URL
+    user_agent : str
+        User agent
+
+    Returns
+    -------
+    str
+        HTML Review
+
     """
 
     from urllib.request import Request, urlopen
@@ -61,15 +70,27 @@ def get_data_batch(
     universe: str = "movie",
     action: str = "DONE",
 ) -> dict[str, object]:
-    """
-    Send POST request
+    """Send POST request
 
-    :username: Senscritique username
-    :user_agent: User agent
-    :offset: Offset value
-    :add_review: Add review
-    :universe: 'movie' or 'tvShow'
-    :action: 'DONE' or 'WISH'
+    Parameters
+    ----------
+    username : str
+        Senscritique username
+    user_agent : str
+        User agent
+    offset : int
+        Offset value
+    add_review : bool
+        Add review
+    universe : str
+        "movie" or "tvShow"
+    action : str
+        "DONE" or "WISH"
+    Returns
+    -------
+    dict[str, object]
+         Dictionary containing formatted results from the request
+
     """
 
     if universe == "movie":
@@ -235,6 +256,27 @@ def get_data(
     add_review: bool = False,
     action: str = "DONE",
 ) -> list[dict[str, object]]:
+    """Send POST request
+
+    Parameters
+    ----------
+    username : str
+        Senscritique username
+    user_agent : str
+        User agent
+    universe : str
+        "movie" or "tvShow"
+    add_review : bool
+        Add review
+    action : str
+        "DONE" or "WISH"
+
+    Returns
+    -------
+    list[dict[str, object]]
+        List of all formatted results
+
+    """
     """
     Send POST request
 
@@ -273,12 +315,17 @@ def get_data(
 
 
 def write_csv(path: str, data: list[dict[str, str]], limit: int = 1900):
-    """
-    Write the CSV.
+    """Write the CSV
 
-    :path: Output path
-    :data: List of dictionaries containing the data
-    :limit: Letterboxd has a limit of 1900 movies.
+    Parameters
+    ----------
+    path : str
+        Output path
+    data : list[dict[str, str]]
+        List of dictionaries containing the data
+    limit : int
+        Letterboxd has a limit of 1900 movies
+
     """
 
     if len(data) > 0:
@@ -303,12 +350,17 @@ def write_csv(path: str, data: list[dict[str, str]], limit: int = 1900):
 def pretty_table(
     data: list[dict[str, str]], num_elements: int = 5, lim_review: int = 70
 ):
-    """
-    Pretty print table with `rich`
+    """Pretty print table with `rich`
 
-    :data: List of dictionaries containing the data
-    :num_elements: Number of elements to print
-    :lim_review: Number of maximal characters in the review
+    Parameters
+    ----------
+    data : list[dict[str, str]]
+        List of dictionaries containing the data
+    num_elements : int
+        Number of elements to print
+    lim_review : int
+        Number of maximal characters in the review
+
     """
 
     if len(data):
@@ -399,6 +451,14 @@ def ask_additional_options() -> dict[str, bool]:
 
 
 def get_user_inputs() -> dict[str, object]:
+    """Ask the user what they want
+
+    Returns
+    -------
+    dict[str, object]
+        Formatted results
+
+    """
     result: dict[str, object] = {
         "username": ask_username(),
         "watchlist": ask_watchlist(),
