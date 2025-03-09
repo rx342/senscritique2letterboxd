@@ -1,6 +1,7 @@
 import csv
 import json
 
+import questionary
 import requests
 from rich import print
 from rich.progress import Progress, track
@@ -343,3 +344,65 @@ def pretty_table(
             table.add_row(*items)
 
         print(table)
+
+
+def ask_username() -> str:
+    """Ask username
+
+    Returns
+    -------
+    str
+        username
+
+    """
+    username = questionary.text("What is your username?").ask()
+    return username
+
+
+def ask_watchlist() -> bool:
+    """Ask the user if they want to only export watchlist
+
+    Returns
+    -------
+    bool
+        Returns True if only export watchlist, else False
+
+    """
+    answer = questionary.confirm(
+        "Do you want to only export watchlist?", default=False
+    ).ask()
+    return answer
+
+
+def ask_additional_options() -> dict[str, bool]:
+    """Ask the user additional options
+
+    Returns
+    -------
+    dict[str, bool]
+        Dictionary containing user queries
+
+    """
+    selected = questionary.checkbox(
+        "Do you want to add the following?",
+        choices=["TV shows", "Reviews"],
+    ).ask()
+
+    result = {"tv": False, "reviews": False}
+    for s in selected:
+        if s == "TV shows":
+            result["tv"] = True
+        if s == "Reviews":
+            result["reviews"] = True
+
+    return result
+
+
+def get_user_inputs() -> dict[str, object]:
+    result: dict[str, object] = {
+        "username": ask_username(),
+        "watchlist": ask_watchlist(),
+    }
+    result.update(ask_additional_options())
+
+    return result

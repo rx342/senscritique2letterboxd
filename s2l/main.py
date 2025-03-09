@@ -2,7 +2,7 @@
 
 from rich import print
 
-from .utils import get_data, pretty_table, write_csv
+from .utils import get_data, get_user_inputs, pretty_table, write_csv
 
 
 def main():
@@ -10,8 +10,9 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--username", type=str, required=True, default=None, help="Your username"
+        "--interactive", "-i", action="store_true", help="Interactive mode"
     )
+    parser.add_argument("--username", type=str, default=None, help="Your username")
     parser.add_argument(
         "--add_tv", default=False, action="store_true", help="Add TV shows"
     )
@@ -40,16 +41,29 @@ def main():
     )
     p_args = parser.parse_args()
 
-    item_action = "WISH" if p_args.watchlist_only else "DONE"
-    universes = ["movie", "tvShow"] if p_args.add_tv else ["movie"]
+    if p_args.interactive:
+        user_inputs = get_user_inputs()
+        item_action = "WISH" if user_inputs["watchlist"] else "DONE"
+        universes = ["movie", "tvShow"] if user_inputs["tv"] else ["movie"]
+        username = user_inputs["username"]
+        add_reviews = user_inputs["reviews"]
+    else:
+        if p_args.username is None:
+            parser.error("--username is required unless --interactive is set.")
+
+        item_action = "WISH" if p_args.watchlist_only else "DONE"
+        universes = ["movie", "tvShow"] if p_args.add_tv else ["movie"]
+        username = p_args.username
+        add_reviews = p_args.add_reviews
+
     results = []
 
     for universe in universes:
         results += get_data(
-            p_args.username,
+            username,  # type: ignore
             p_args.user_agent,
             universe,
-            p_args.add_reviews,
+            add_reviews,  # type: ignore
             item_action,
         )
 
