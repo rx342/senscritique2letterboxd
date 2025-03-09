@@ -2,7 +2,7 @@ import pytest
 
 
 def test_get_data_batch():
-    from s2l.main import get_data_batch
+    from s2l.utils import get_data_batch
 
     with pytest.raises(ValueError):
         # No account
@@ -16,7 +16,7 @@ def test_get_data_batch():
 
 
 def test_movies():
-    from s2l.main import get_data
+    from s2l.utils import get_data
 
     item_action = "DONE"
     universes = ["movie"]
@@ -29,7 +29,7 @@ def test_movies():
 
 
 def test_movies_and_tvshows():
-    from s2l.main import get_data
+    from s2l.utils import get_data
 
     item_action = "DONE"
     universes = ["movie", "tvShow"]
@@ -42,7 +42,7 @@ def test_movies_and_tvshows():
 
 
 def test_movies_with_reviews():
-    from s2l.main import get_data
+    from s2l.utils import get_data
 
     item_action = "DONE"
     universes = ["movie"]
@@ -55,7 +55,7 @@ def test_movies_with_reviews():
 
 
 def test_movies_and_tvshows_with_reviews():
-    from s2l.main import get_data
+    from s2l.utils import get_data
 
     item_action = "DONE"
     universes = ["movie", "tvShow"]
@@ -68,7 +68,7 @@ def test_movies_and_tvshows_with_reviews():
 
 
 def test_watchlist_movies():
-    from s2l.main import get_data
+    from s2l.utils import get_data
 
     item_action = "WISH"
     universes = ["movie"]
@@ -81,7 +81,7 @@ def test_watchlist_movies():
 
 
 def test_watchlist_movies_and_tvshows():
-    from s2l.main import get_data
+    from s2l.utils import get_data
 
     item_action = "WISH"
     universes = ["movie", "tvShow"]

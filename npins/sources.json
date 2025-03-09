@@ -1,0 +1,26 @@
+{
+  "pins": {
+    "nixpkgs": {
+      "type": "Channel",
+      "name": "nixpkgs-unstable",
+      "url": "https://releases.nixos.org/nixpkgs/nixpkgs-25.05pre763845.de0fe301211c/nixexprs.tar.xz",
+      "hash": "1iq1a41c1c6i7lr8xpp2bwbm36v8qijisx1jv4126624swr9467l"
+    },
+    "poetry2nix": {
+      "type": "GitRelease",
+      "repository": {
+        "type": "GitHub",
+        "owner": "nix-community",
+        "repo": "poetry2nix"
+      },
+      "pre_releases": false,
+      "version_upper_bound": null,
+      "release_prefix": null,
+      "version": "2025.3.531887",
+      "revision": "98293f0b368f24c48e05aaa2359dcc0de15e976f",
+      "url": "https://api.github.com/repos/nix-community/poetry2nix/tarball/2025.3.531887",
+      "hash": "18nsaq8cj113v8yw2zpnlxm4lxp59vdbs6srrajgmxm4b1gmds21"
+    }
+  },
+  "version": 3
+}

@@ -20,6 +20,7 @@ requests = "^2.29.0"
 beautifulsoup4 = "^4.12.2"
 black = "^24.8.0"
 pytest = "^8.3.2"
+questionary = "^2.1.0"
 
 [tool.isort]
 profile = "black"
