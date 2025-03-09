@@ -291,22 +291,23 @@ def get_data(
     offset = 0
     data = get_data_batch(username, user_agent, offset, add_review, universe, action)
     num_total = data["num_total"]
-    len_data = len(data["collection"])
-    results += data["collection"]
+    len_data = len(data["collection"])  # type: ignore
+    results += data["collection"]  # type: ignore
     offset += len_data
 
     str_el = "films" if universe == "movie" else "TV shows"
 
     with Progress() as progress:
         task = progress.add_task(
-            f"Collecting [bold violet]{str_el}[/bold violet]", total=num_total
+            f"Collecting [bold violet]{str_el}[/bold violet]",
+            total=num_total,  # type: ignore
         )
-        while offset < num_total:
+        while offset < num_total:  # type: ignore
             data = get_data_batch(
                 username, user_agent, offset, add_review, universe, action
             )
 
-            len_data = len(data["collection"])
+            len_data = len(data["collection"])  # type: ignore
             results += data["collection"]
             offset += len_data
             progress.update(task, advance=len_data)
