@@ -1,6 +1,11 @@
 {
   source ? import ./npins,
-  pkgs ? import source.nixpkgs { },
+  system ? builtins.currentSystem,
+  pkgs ? import source.nixpkgs {
+    overlays = [ ];
+    config = { };
+    inherit system;
+  },
   poetry2nix ? import source.poetry2nix { inherit pkgs; },
 }:
 
