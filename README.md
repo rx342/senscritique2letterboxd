@@ -24,14 +24,14 @@ pip install s2l
 
 ## Usage
 
-| Argument             | Type   | Description                                                                 |
-| -------------------- | ------ | --------------------------------------------------------------------------- |
-| `--interactive`/`-i` | `bool` | Interactive mode                                                            |
-| `--username`         | `str`  | Username (unused if interactive mode)                                       |
-| `--add_tv`           | `bool` | **Optional**: Add TV shows (unused if interactive mode)                     |
-| `--add_reviews`      | `bool` | **Optional**: Add reviews (unused if interactive mode)                      |
-| `--watchlist_only`   | `bool` | **Optional**: Export watchlist only (unused if interactive mode)            |
-| `--user_agent`       | `str`  | **Optional**: User agent to use when request (**default**: `"Mozilla/5.0"`) |
+| Argument             | Type   | Default         | Description                                                      |
+| -------------------- | ------ | --------------- | ---------------------------------------------------------------- |
+| `--interactive`/`-i` | `bool` | `False`         | Interactive mode                                                 |
+| `--username`         | `str`  | `""`            | Username (unused if interactive mode)                            |
+| `--add_tv`           | `bool` | `False`         | **Optional**: Add TV shows (unused if interactive mode)          |
+| `--add_reviews`      | `bool` | `False`         | **Optional**: Add reviews (unused if interactive mode)           |
+| `--watchlist_only`   | `bool` | `False`         | **Optional**: Export watchlist only (unused if interactive mode) |
+| `--user_agent`       | `str`  | `"Mozilla/5.0"` | **Optional**: User agent to use when request                     |
 
 ### 🌟 New feature (+0.2.0): interactive mode
 
