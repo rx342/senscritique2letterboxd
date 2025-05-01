@@ -1,0 +1,33 @@
+[project]
+name = "s2l"
+version = "0.3.0"
+description = "Export your SensCritique data to Letterboxd"
+authors = [ { name = "rx342" } ]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "beautifulsoup4>=4.13.4",
+    "questionary>=2.1.0",
+    "requests>=2.32.3",
+    "rich>=14.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/rx342/senscritique2letterboxd"
+Issues = "https://github.com/rx342/senscritique2letterboxd/issues"
+
+[project.scripts]
+s2l = "s2l.main:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+    "ruff>=0.11.7",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["s2l"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

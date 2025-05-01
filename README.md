@@ -77,10 +77,10 @@ And [import](https://letterboxd.com/import/) your CSV ✨.
 
 You can spawn a shell with all dependencies with the following method
 
-### Poetry
+### uv
 
 ```bash
-poetry env activate
+uv venv
 ```
 
 ### Nix
