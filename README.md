@@ -27,7 +27,7 @@ pip install s2l
 | Argument             | Type   | Default         | Description                                                      |
 | -------------------- | ------ | --------------- | ---------------------------------------------------------------- |
 | `--interactive`/`-i` | `bool` | `False`         | Interactive mode                                                 |
-| `--username`         | `str`  | `""`            | Username (unused if interactive mode)                            |
+| `--username`         | `str`  | `None`          | Username (unused if interactive mode)                            |
 | `--add_tv`           | `bool` | `False`         | **Optional**: Add TV shows (unused if interactive mode)          |
 | `--add_reviews`      | `bool` | `False`         | **Optional**: Add reviews (unused if interactive mode)           |
 | `--watchlist_only`   | `bool` | `False`         | **Optional**: Export watchlist only (unused if interactive mode) |
