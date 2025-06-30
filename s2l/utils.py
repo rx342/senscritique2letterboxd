@@ -1,6 +1,5 @@
 import csv
 import json
-from numbers import Number
 from time import sleep
 
 import questionary
