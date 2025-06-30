@@ -39,6 +39,12 @@ def main():
         default="Mozilla/5.0",
         help="User agent",
     )
+    parser.add_argument(
+        "--delay",
+        type=float,
+        default=5,
+        help="Number of seconds to wait between each batch download to avoid rate limit",
+    )
     p_args = parser.parse_args()
 
     if p_args.interactive:
@@ -47,6 +53,7 @@ def main():
         universes = ["movie", "tvShow"] if user_inputs["tv"] else ["movie"]
         username = user_inputs["username"]
         add_reviews = user_inputs["reviews"]
+        delay = user_inputs["delay"]
     else:
         if p_args.username is None:
             parser.error("--username is required unless --interactive is set.")
@@ -55,6 +62,7 @@ def main():
         universes = ["movie", "tvShow"] if p_args.add_tv else ["movie"]
         username = p_args.username
         add_reviews = p_args.add_reviews
+        delay = p_args.delay
 
     results = []
 
@@ -65,6 +73,7 @@ def main():
             universe,
             add_reviews,  # type: ignore
             item_action,
+            delay,  # type: ignore
         )
 
     if len(results) > 0:

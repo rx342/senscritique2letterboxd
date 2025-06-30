@@ -24,14 +24,15 @@ pip install s2l
 
 ## Usage
 
-| Argument             | Type   | Default         | Description                                                      |
-| -------------------- | ------ | --------------- | ---------------------------------------------------------------- |
-| `--interactive`/`-i` | `bool` | `False`         | Interactive mode                                                 |
-| `--username`         | `str`  | `None`          | Username (unused if interactive mode)                            |
-| `--add_tv`           | `bool` | `False`         | **Optional**: Add TV shows (unused if interactive mode)          |
-| `--add_reviews`      | `bool` | `False`         | **Optional**: Add reviews (unused if interactive mode)           |
-| `--watchlist_only`   | `bool` | `False`         | **Optional**: Export watchlist only (unused if interactive mode) |
-| `--user_agent`       | `str`  | `"Mozilla/5.0"` | **Optional**: User agent to use when request                     |
+| Argument             | Type    | Default         | Description                                                                                                                                                           |
+| -------------------- | ------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--interactive`/`-i` | `bool`  | `False`         | Interactive mode                                                                                                                                                      |
+| `--username`         | `str`   | `None`          | Username (unused if interactive mode)                                                                                                                                 |
+| `--add_tv`           | `bool`  | `False`         | **Optional**: Add TV shows (unused if interactive mode)                                                                                                               |
+| `--add_reviews`      | `bool`  | `False`         | **Optional**: Add reviews (unused if interactive mode)                                                                                                                |
+| `--watchlist_only`   | `bool`  | `False`         | **Optional**: Export watchlist only (unused if interactive mode)                                                                                                      |
+| `--user_agent`       | `str`   | `"Mozilla/5.0"` | **Optional**: User agent to use when request                                                                                                                          |
+| `--delay`            | `float` | `5`             | **Optional**: Number of seconds to wait between each batch download to avoid rate limit (decrease for a faster execution, increase to make sure you avoid rate limit) |
 
 ### 🌟 New feature (+0.2.0): interactive mode
 

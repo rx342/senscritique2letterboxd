@@ -1,5 +1,7 @@
 import csv
 import json
+from numbers import Number
+from time import sleep
 
 import questionary
 import requests
@@ -255,6 +257,7 @@ def get_data(
     universe: str = "movie",
     add_review: bool = False,
     action: str = "DONE",
+    delay: float = 5,
 ) -> list[dict[str, object]]:
     """Send POST request
 
@@ -270,6 +273,8 @@ def get_data(
         Add review
     action : str
         "DONE" or "WISH"
+    delay : float
+        Number of seconds to wait between each batch to avoid rate limit
 
     Returns
     -------
@@ -290,6 +295,7 @@ def get_data(
     results = []
     offset = 0
     data = get_data_batch(username, user_agent, offset, add_review, universe, action)
+    sleep(delay)
     num_total = data["num_total"]
     len_data = len(data["collection"])  # type: ignore
     results += data["collection"]  # type: ignore
@@ -306,6 +312,7 @@ def get_data(
             data = get_data_batch(
                 username, user_agent, offset, add_review, universe, action
             )
+            sleep(delay)
 
             len_data = len(data["collection"])  # type: ignore
             results += data["collection"]
@@ -412,6 +419,31 @@ def ask_username() -> str:
     return username
 
 
+def ask_delay() -> float:
+    """Ask delay
+
+    Returns
+    -------
+    float
+        delay
+
+    """
+
+    def is_number(x):
+        try:
+            float(x)
+            return True
+        except ValueError:
+            return False
+
+    delay = questionary.text(
+        "Delay in seconds between each batch download (to avoid rate limit)?",
+        default="5",
+        validate=is_number,
+    ).ask()
+    return float(delay)
+
+
 def ask_watchlist() -> bool:
     """Ask the user if they want to only export watchlist
 
@@ -463,6 +495,7 @@ def get_user_inputs() -> dict[str, object]:
     result: dict[str, object] = {
         "username": ask_username(),
         "watchlist": ask_watchlist(),
+        "delay": ask_delay(),
     }
     result.update(ask_additional_options())
 
