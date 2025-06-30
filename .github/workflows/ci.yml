@@ -34,7 +34,7 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-unstable
       - name: Nix format
-        run: nix-shell -p nixfmt-rfc-style --run "nixfmt --check ."
+        run: nix-shell -p nixfmt-tree --run "treefmt --ci"
 
   pytest:
     name: Unit tests
