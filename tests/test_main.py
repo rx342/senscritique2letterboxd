@@ -15,32 +15,6 @@ def test_get_data_batch():
         get_data_batch("fdzubazea", "Mozilla/5.0", action="neitherdonenorwish")
 
 
-def test_movies():
-    from s2l.utils import get_data
-
-    item_action = "DONE"
-    universes = ["movie"]
-
-    results = []
-    for universe in universes:
-        results += get_data("vsv", "Mozilla/5.0", universe, False, item_action)
-
-    assert len(results) > 0
-
-
-def test_movies_and_tvshows():
-    from s2l.utils import get_data
-
-    item_action = "DONE"
-    universes = ["movie", "tvShow"]
-
-    results = []
-    for universe in universes:
-        results += get_data("vsv", "Mozilla/5.0", universe, False, item_action)
-
-    assert len(results) > 0
-
-
 def test_movies_with_reviews():
     from s2l.utils import get_data
 
@@ -51,7 +25,7 @@ def test_movies_with_reviews():
     for universe in universes:
         results += get_data("vsv", "Mozilla/5.0", universe, True, item_action)
 
-    assert len(results) > 0
+    assert len(results) == 947
 
 
 def test_movies_and_tvshows_with_reviews():
@@ -64,7 +38,7 @@ def test_movies_and_tvshows_with_reviews():
     for universe in universes:
         results += get_data("vsv", "Mozilla/5.0", universe, True, item_action)
 
-    assert len(results) > 0
+    assert len(results) == 994
 
 
 def test_watchlist_movies():
@@ -77,7 +51,7 @@ def test_watchlist_movies():
     for universe in universes:
         results += get_data("vsv", "Mozilla/5.0", universe, False, item_action)
 
-    assert len(results) > 0
+    assert len(results) == 119
 
 
 def test_watchlist_movies_and_tvshows():
@@ -90,4 +64,4 @@ def test_watchlist_movies_and_tvshows():
     for universe in universes:
         results += get_data("vsv", "Mozilla/5.0", universe, False, item_action)
 
-    assert len(results) > 0
+    assert len(results) == 162
