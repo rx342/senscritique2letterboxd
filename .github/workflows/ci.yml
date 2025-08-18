@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5.0.0
       - name: Install python
         uses: actions/setup-python@v5.6.0
       - name: Install uv
@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5.0.0
       - name: Install Nix
         uses: cachix/install-nix-action@v31
         with:
@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5.0.0
       - name: Install python
         uses: actions/setup-python@v5.6.0
       - name: Install uv
