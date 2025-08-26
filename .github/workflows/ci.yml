@@ -20,8 +20,10 @@ jobs:
           cache-dependency-glob: "uv.lock"
       - name: Install the project
         run: uv sync --locked --all-extras --dev
-      - name: Ruff format
+      - name: Ruff lint
         run: uv run ruff check
+      - name: Ruff format
+        run: uv run ruff format --check
 
   nix-fmt:
     name: nix format
