@@ -35,12 +35,25 @@ let
     ]
   );
   venv = pythonSet.mkVirtualEnv "s2l" workspace.deps.default;
+  s2l =
+    pkgs.runCommandNoCC "s2l"
+      {
+        buildInputs = [ venv ];
+      }
+      ''
+        mkdir -p $out/bin
+        ln -s ${venv}/bin/s2l $out/bin
+      '';
 in
-pkgs.runCommandNoCC "s2l"
-  {
-    buildInputs = [ venv ];
-  }
-  ''
-    mkdir -p $out/bin
-    ln -s ${venv}/bin/s2l $out/bin
-  ''
+{
+  inherit s2l;
+
+  default = s2l;
+
+  shell = pkgs.mkShellNoCC {
+    packages = [
+      pkgs.uv
+      venv
+    ];
+  };
+}
