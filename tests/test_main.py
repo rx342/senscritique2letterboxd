@@ -38,7 +38,7 @@ def test_movies_and_tvshows_with_reviews():
     for universe in universes:
         results += get_data("vsv", "Mozilla/5.0", universe, True, item_action)
 
-    assert len(results) == 998
+    assert len(results) == 999
 
 
 def test_watchlist_movies():
