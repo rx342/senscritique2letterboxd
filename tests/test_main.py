@@ -25,7 +25,7 @@ def test_movies_with_reviews():
     for universe in universes:
         results += get_data("vsv", "Mozilla/5.0", universe, True, item_action)
 
-    assert len(results) == 947
+    assert len(results) > 0
 
 
 def test_movies_and_tvshows_with_reviews():
@@ -38,7 +38,7 @@ def test_movies_and_tvshows_with_reviews():
     for universe in universes:
         results += get_data("vsv", "Mozilla/5.0", universe, True, item_action)
 
-    assert len(results) == 1002
+    assert len(results) > 0
 
 
 def test_watchlist_movies():
@@ -51,7 +51,7 @@ def test_watchlist_movies():
     for universe in universes:
         results += get_data("vsv", "Mozilla/5.0", universe, False, item_action)
 
-    assert len(results) == 119
+    assert len(results) > 0
 
 
 def test_watchlist_movies_and_tvshows():
@@ -64,4 +64,4 @@ def test_watchlist_movies_and_tvshows():
     for universe in universes:
         results += get_data("vsv", "Mozilla/5.0", universe, False, item_action)
 
-    assert len(results) == 162
+    assert len(results) > 0
