@@ -36,7 +36,7 @@ let
   );
   venv = pythonSet.mkVirtualEnv "s2l" workspace.deps.default;
   s2l =
-    pkgs.runCommandNoCC "s2l"
+    pkgs.runCommand "s2l"
       {
         buildInputs = [ venv ];
       }
