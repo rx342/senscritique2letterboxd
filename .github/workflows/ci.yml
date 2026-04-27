@@ -11,17 +11,22 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
       - name: Install python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+
       - name: Install uv
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
+
       - name: Install the project
         run: uv sync --locked --all-extras --dev
+
       - name: Ruff lint
         run: uv run ruff check
+
       - name: Ruff format
         run: uv run ruff format --check
 
@@ -31,10 +36,16 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Install Nix
-        uses: cachix/install-nix-action@ab739621df7a23f52766f9ccc97f38da6b7af14f # v31.10.5
-        with:
-          nix_path: nixpkgs=channel:nixos-unstable
+
+      - name: Install Lix
+        uses: samueldr/lix-gha-installer-action@7b7f14d320d6aacfb65bd1ef761566b3b69e474c # v2026-02-22
+
+      # https://git.lix.systems/lix-project/lix/issues/545#issuecomment-8412
+      - name: Fixes and hacks
+        run: |
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_unconfined=0
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
       - name: Nix format
         run: nix-shell -p nixfmt-tree --run "treefmt --ci"
 
@@ -45,14 +56,18 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
       - name: Install python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+
       - name: Install uv
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
+
       - name: Install the project
         run: uv sync --locked --all-extras --dev
+
       - name: pytest
         run: uv run pytest
