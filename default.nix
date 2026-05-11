@@ -48,8 +48,6 @@ in
 {
   inherit s2l;
 
-  default = s2l;
-
   shell = pkgs.mkShellNoCC {
     packages = [
       pkgs.uv
