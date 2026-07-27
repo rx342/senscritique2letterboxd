@@ -105,11 +105,7 @@ def get_data_batch(
         raise ValueError("`action` is neither 'DONE' nor 'WISH'")
 
     int_univ = 1 if universe == "movie" else 4
-
-    url = "https://www.senscritique.com/%s/collection?universe=%d" % (
-        username,
-        int_univ,
-    )
+    url = f"https://www.senscritique.com/{username}/collection?universe={int_univ}"
 
     query = (
         '{"query":"query UserCollection($action: ProductAction, '
