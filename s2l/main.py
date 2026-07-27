@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 from rich import print
 
 from .utils import get_data, get_user_inputs, pretty_table, write_csv
