@@ -295,7 +295,7 @@ wheels = [
 
 [[package]]
 name = "s2l"
-version = "0.5.2"
+version = "0.5.3"
 source = { editable = "." }
 dependencies = [
     { name = "beautifulsoup4" },
