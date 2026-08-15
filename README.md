@@ -22,6 +22,14 @@ Install the package with:
 pip install s2l
 ```
 
+### Nix
+
+You can build it with `nix` by cloning this repository
+
+```bash
+nix-build --attr s2l
+```
+
 ## Usage
 
 | Argument             | Type    | Default         | Description                                                                                                                                                           |
@@ -42,7 +50,7 @@ s2l -i
 
 ### CLI
 
-Please replace every `{USERNAME}` with your username.
+Please replace `{USERNAME}` with your username.
 
 #### Watched
 
